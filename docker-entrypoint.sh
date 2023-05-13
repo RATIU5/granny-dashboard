@@ -9,6 +9,7 @@ HTTPS_SERVER_NAME="${HTTPS_SERVER_NAME:-www.example.com}"
 LOG_LEVEL="${LOG_LEVEL:-info}"
 TZ="${TZ:-UTC}"
 PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT:-256M}"
+PHP_VERSION="${PHP_VERSION:-php82}"
 
 echo 'Updating configurations'
 
@@ -39,21 +40,21 @@ sed -i 's/#LoadModule\ deflate_module/LoadModule\ deflate_module/' /etc/apache2/
 sed -i 's/#LoadModule\ expires_module/LoadModule\ expires_module/' /etc/apache2/httpd.conf
 
 # Modify php memory limit and timezone
-sed -i "s/memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" /etc/php81/php.ini
-sed -i "s#^;date.timezone =\$#date.timezone = \"${TZ}\"#" /etc/php81/php.ini
-sed -i 's/^display_errors =.*/display_errors = On/' /etc/php81/php.ini
-sed -i 's/^error_reporting =.*/error_reporting = E_ALL/' /etc/php81/php.ini
+sed -i "s/memory_limit = .*/memory_limit = ${PHP_MEMORY_LIMIT}/" /etc/${PHP_VERSION}/php.ini
+sed -i "s#^;date.timezone =\$#date.timezone = \"${TZ}\"#" /etc/${PHP_VERSION}/php.ini
+sed -i 's/^display_errors =.*/display_errors = On/' /etc/${PHP_VERSION}/php.ini
+sed -i 's/^error_reporting =.*/error_reporting = E_ALL/' /etc/${PHP_VERSION}/php.ini
 
 # Modify xdebug.ini to enable it
-sed -i 's/^;xdebug.mode =.*/xdebug.mode = debug/' /etc/php81/conf.d/50_xdebug.ini
-echo "zend_extension=xdebug.so" >> /etc/php81/conf.d/50_xdebug.ini \
-	&& echo "xdebug.mode=debug" >> /etc/php81/conf.d/50_xdebug.ini \
-	&& echo "xdebug.log=/var/www/html/xdebug/xdebug.log" >> /etc/php81/conf.d/50_xdebug.ini \
-	&& echo "xdebug.discover_client_host=1" >> /etc/php81/conf.d/50_xdebug.ini \
-	&& echo "xdebug.remote_enable=on" >> /etc/php81/conf.d/50_xdebug.ini \
-	&& echo "xdebug.client_host=host.docker.internal" >> /etc/php81/conf.d/50_xdebug.ini \
-	&& echo "xdebug.remote_host=host.docker.internal" >> /etc/php81/conf.d/50_xdebug.ini \
-	&& echo "xdebug.client_port=9000" >> /etc/php81/conf.d/50_xdebug.ini
+sed -i 's/^;xdebug.mode =.*/xdebug.mode = debug/' /etc/${PHP_VERSION}/conf.d/50_xdebug.ini
+echo "zend_extension=xdebug.so" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini \
+	&& echo "xdebug.mode=debug" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini \
+	&& echo "xdebug.log=/var/www/html/xdebug/xdebug.log" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini \
+	&& echo "xdebug.discover_client_host=1" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini \
+	&& echo "xdebug.remote_enable=on" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini \
+	&& echo "xdebug.client_host=host.docker.internal" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini \
+	&& echo "xdebug.remote_host=host.docker.internal" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini \
+	&& echo "xdebug.client_port=9000" >> /etc/${PHP_VERSION}/conf.d/50_xdebug.ini
 
 echo 'Running Apache'
 
